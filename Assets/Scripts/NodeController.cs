@@ -23,10 +23,14 @@ public class NodeController : MonoBehaviour
 
     public SpriteRenderer pelletSprite;
 
+    public GameManager gameManager;
+
     // Start is called before the first frame update
     void Awake()
     {
-        if(transform.childCount > 0) {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        if (transform.childCount > 0)
+        {
             hasPellet = true;
             isPelletNode = true;
             pelletSprite = GetComponentInChildren<SpriteRenderer>();
@@ -120,10 +124,11 @@ public class NodeController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player" && isPelletNode)
+        if (collision.tag == "Player" && hasPellet)
         {
             hasPellet = false;
             pelletSprite.enabled = false;
+            gameManager.CollectedPellet(this);
         }
     }
 }
