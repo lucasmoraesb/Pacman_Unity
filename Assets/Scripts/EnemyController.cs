@@ -15,6 +15,7 @@ public class EnemyController : MonoBehaviour
     }
 
     public GhostNodeStatesEnum ghostNodeState;
+    public GhostNodeStatesEnum respawnState; 
 
     public enum GhostType
     {
@@ -25,7 +26,6 @@ public class EnemyController : MonoBehaviour
     }
 
     public GhostType ghostType;
-
     public GameObject ghostNodeLeft;
     public GameObject ghostNodeRight;
     public GameObject ghostNodeCenter;
@@ -38,6 +38,8 @@ public class EnemyController : MonoBehaviour
     public bool readyToLeaveHome = false;
 
     public GameManager gameManager;
+
+    public bool testRespawn = false;
     // Start is called before the first frame update
     void Awake()
     {
@@ -46,61 +48,124 @@ public class EnemyController : MonoBehaviour
         if(ghostType == GhostType.red)
         {
             ghostNodeState = GhostNodeStatesEnum.startNode;
+            respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeStart;
+            readyToLeaveHome = true;
         }
         else if(ghostType == GhostType.pink)
         {
             ghostNodeState = GhostNodeStatesEnum.centerNode;
+            respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeCenter;
         }
         else if(ghostType == GhostType.blue)
         {
             ghostNodeState = GhostNodeStatesEnum.leftNode;
+            respawnState = GhostNodeStatesEnum.leftNode;
             startingNode = ghostNodeLeft;
         }
         else if(ghostType == GhostType.orange)
         {
             ghostNodeState = GhostNodeStatesEnum.rightNode;
+            respawnState = GhostNodeStatesEnum.rightNode;
             startingNode = ghostNodeRight;
         }
 
         movementController.currentNode = startingNode;
+        transform.position = startingNode.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(testRespawn == true)
+        {
+            readyToLeaveHome = false;
+            ghostNodeState = GhostNodeStatesEnum.respawning;
+            testRespawn = false;
+        }
     }
 
-    public void ReachedCenterOfNode(NodeController nodeController) {
-        if(ghostNodeState == GhostNodeStatesEnum.movingInNodes) {
+    public void ReachedCenterOfNode(NodeController nodeController)
+    {
+        if(ghostNodeState == GhostNodeStatesEnum.movingInNodes)
+        {
             // Determine next game node to go to
-            if(GhostType.red == ghostType) {
+            if(GhostType.red == ghostType)
+            {
                 DetermineRedGhostDirection();
-            } else if(GhostType.pink == ghostType) {
+            }
+            else if(GhostType.pink == ghostType)
+            {
                 DeterminePinkGhostDirection();
-            } else if(GhostType.blue == ghostType) {
+            }
+            else if(GhostType.blue == ghostType) 
+            {
                 DetermineBlueGhostDirection();
-            } else if(GhostType.orange == ghostType) {
+            }
+            else if(GhostType.orange == ghostType)
+            {
                 DetermineOrangeGhostDirection();
             }
-        } else if(ghostNodeState == GhostNodeStatesEnum.respawning){
-            // Determine the quickest direction to home
-        } else {
+        }
+        else if(ghostNodeState == GhostNodeStatesEnum.respawning)
+        {
+            string direction = "";
+
+            if(transform.position.x == ghostNodeStart.transform.position.x && transform.position.y == ghostNodeStart.transform.position.y)
+            {
+                direction = "down";
+            }
+            else if(transform.position.x == ghostNodeCenter.transform.position.x && transform.position.y == ghostNodeCenter.transform.position.y)
+            {
+                if(respawnState == GhostNodeStatesEnum.centerNode)
+                {
+                    ghostNodeState = respawnState;
+                }
+                else if(respawnState == GhostNodeStatesEnum.leftNode)
+                {
+                    direction = "left";
+                }
+                else if(respawnState == GhostNodeStatesEnum.rightNode)
+                {
+                    direction = "right";
+                }
+            }
+            else if(
+                (transform.position.x == ghostNodeLeft.transform.position.x && transform.position.y == ghostNodeLeft.transform.position.y) ||
+                (transform.position.x == ghostNodeRight.transform.position.x && transform.position.y == ghostNodeRight.transform.position.y)
+                ) {
+                ghostNodeState = respawnState;
+            }
+            else
+            {
+                direction = GetClosestDirection(ghostNodeStart.transform.position);
+            }
+            movementController.SetDirection(direction);
+        }
+        else
+        {
             // If we are ready to leave our home
-            if(readyToLeaveHome) {
+            if(readyToLeaveHome)
+            {
                 //If we are in the left or right home node, move to the center
-                if(ghostNodeState == GhostNodeStatesEnum.leftNode) {
+                if(ghostNodeState == GhostNodeStatesEnum.leftNode)
+                {
                     ghostNodeState = GhostNodeStatesEnum.centerNode;
                     movementController.SetDirection("right");
-                } else if(ghostNodeState == GhostNodeStatesEnum.rightNode) {
+                }
+                else if(ghostNodeState == GhostNodeStatesEnum.rightNode)
+                {
                     ghostNodeState = GhostNodeStatesEnum.centerNode;
                     movementController.SetDirection("left");
-                } else if(ghostNodeState == GhostNodeStatesEnum.centerNode) {
+                }
+                else if(ghostNodeState == GhostNodeStatesEnum.centerNode)
+                {
                     ghostNodeState = GhostNodeStatesEnum.startNode;
                     movementController.SetDirection("up");
-                } else if(ghostNodeState == GhostNodeStatesEnum.startNode) {
+                }
+                else if(ghostNodeState == GhostNodeStatesEnum.startNode)
+                {
                     ghostNodeState = GhostNodeStatesEnum.movingInNodes;
                     movementController.SetDirection("left");
                 }

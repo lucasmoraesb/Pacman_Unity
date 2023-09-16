@@ -67,6 +67,12 @@ public class MovementController : MonoBehaviour
             }
             else
             {
+                if(currentNodeController.isGhostStartingNode && direction == "down"
+                    && (!isGhost || GetComponent<EnemyController>().ghostNodeState != EnemyController.GhostNodeStatesEnum.respawning))
+                {
+                    direction = lastMovingDirection;
+                }
+
                 GameObject newNode = currentNodeController.GetNodeFromDirection(direction);
 
                 if (newNode != null)
