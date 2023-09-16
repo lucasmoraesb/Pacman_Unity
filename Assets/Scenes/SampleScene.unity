@@ -16863,6 +16863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39fa0e1124e96d146873bca4b935d1d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pacman: {fileID: 707260839}
   leftWarpNode: {fileID: 226616052}
   rightWarpNode: {fileID: 1584994775}
   munch1: {fileID: 533159477}
@@ -35424,7 +35425,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
   currentNode: {fileID: 0}
-  speed: 4
+  speed: 3
   direction: 
   lastMovingDirection: 
   canWarp: 1
@@ -35442,7 +35443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghostNodeState: 0
-  ghostType: 2
+  ghostType: 0
   ghostNodeLeft: {fileID: 1779790446}
   ghostNodeRight: {fileID: 874034828}
   ghostNodeCenter: {fileID: 499644851}
@@ -35450,6 +35451,7 @@ MonoBehaviour:
   movementController: {fileID: 0}
   startingNode: {fileID: 0}
   readyToLeaveHome: 0
+  gameManager: {fileID: 0}
 --- !u!4 &1276343594
 Transform:
   m_ObjectHideFlags: 0
@@ -39553,14 +39555,14 @@ RectTransform:
   m_GameObject: {fileID: 1396958706}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2108001248}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -150.4, y: 279.7}
+  m_AnchoredPosition: {x: -113.1, y: 210}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1396958708
@@ -61576,7 +61578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
