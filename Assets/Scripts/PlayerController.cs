@@ -28,15 +28,23 @@ public class PlayerController : MonoBehaviour
     public void Setup()
     {
         movementController.currentNode = startNode;
+        movementController.direction = "left";
         movementController.lastMovingDirection = "left";
+        sprite.flipX = false;
         transform.position = new Vector2(startNode.transform.position.x + 0.2f, startNode.transform.position.y);
+        animator.speed = 1;
         animator.SetBool("moving", false);
+    }
+
+    public void Stop()
+    {
+        animator.speed = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!gameManager.gameIsRunning)
+        if (!gameManager.gameIsRunning)
         {
             return;
         }

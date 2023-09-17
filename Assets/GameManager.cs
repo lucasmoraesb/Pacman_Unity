@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour
     public int lives;
     public int currentLevel;
 
+    public Image blackBackground;
+
     public enum GhostMode
     {
         chase, scatter
@@ -62,6 +64,7 @@ public class GameManager : MonoBehaviour
     {
         newGame = true;
         clearedLevel = false;
+        blackBackground.enabled = false;
 
         pacmanController = pacman.GetComponent<PlayerController>();
         redGhostController = redGhost.GetComponent<EnemyController>();
@@ -78,10 +81,12 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator Setup()
     {
-        if(clearedLevel)
+        if (clearedLevel)
         {
+            blackBackground.enabled = true;
             yield return new WaitForSeconds(0.1f);
         }
+        blackBackground.enabled = false;
 
         pelletsCollectedOnThisLife = 0;
         currentGhostMode = GhostMode.scatter;
@@ -90,16 +95,17 @@ public class GameManager : MonoBehaviour
 
         float waitTimer = 1f;
 
-        if(clearedLevel || newGame)
+        if (clearedLevel || newGame)
         {
+            pelletsLeft = totalPellets;
             waitTimer = 4f;
-            for(int i = 0; i < nodeControllers.Count; i++)
+            for (int i = 0; i < nodeControllers.Count; i++)
             {
                 nodeControllers[i].RespawnPellet();
             }
         }
 
-        if(newGame)
+        if (newGame)
         {
             startGameAudio.Play();
             score = 0;
@@ -127,6 +133,13 @@ public class GameManager : MonoBehaviour
         // siren.Play();
     }
 
+    void StopGame()
+    {
+        gameIsRunning = false;
+        // siren.Stop();
+        pacman.GetComponent<PlayerController>().Stop();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -146,7 +159,7 @@ public class GameManager : MonoBehaviour
         scoreText.text = "Score: " + score.ToString();
     }
 
-    public void CollectedPellet(NodeController nodeController)
+    public IEnumerator CollectedPellet(NodeController nodeController)
     {
         if (currentMunch == 0)
         {
@@ -165,7 +178,7 @@ public class GameManager : MonoBehaviour
         int requiredBluePellets = 0;
         int requiredOrangePellets = 0;
 
-        if(hadDeathOnThisLevel)
+        if (hadDeathOnThisLevel)
         {
             requiredBluePellets = 12;
             requiredOrangePellets = 32;
@@ -176,17 +189,26 @@ public class GameManager : MonoBehaviour
             requiredOrangePellets = 60;
         }
 
-        if(pelletsCollectedOnThisLife >= requiredBluePellets && !blueGhost.GetComponent<EnemyController>().leftHomeBefore)
+        if (pelletsCollectedOnThisLife >= requiredBluePellets && !blueGhost.GetComponent<EnemyController>().leftHomeBefore)
         {
             blueGhost.GetComponent<EnemyController>().readyToLeaveHome = true;
         }
 
-        if(pelletsCollectedOnThisLife >= requiredOrangePellets && !orangeGhost.GetComponent<EnemyController>().leftHomeBefore)
+        if (pelletsCollectedOnThisLife >= requiredOrangePellets && !orangeGhost.GetComponent<EnemyController>().leftHomeBefore)
         {
             orangeGhost.GetComponent<EnemyController>().readyToLeaveHome = true;
         }
 
 
         AddToScore(10);
+
+        if (pelletsLeft == 0)
+        {
+            currentLevel++;
+            clearedLevel = true;
+            StopGame();
+            yield return new WaitForSeconds(1);
+            StartCoroutine(Setup());
+        }
     }
 }
