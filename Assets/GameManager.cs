@@ -46,11 +46,14 @@ public class GameManager : MonoBehaviour
     public bool clearedLevel;
 
     public AudioSource startGameAudio;
+    public AudioSource death;
 
     public int lives;
     public int currentLevel;
 
     public Image blackBackground;
+
+    public Text gameOverText;
 
     public enum GhostMode
     {
@@ -81,6 +84,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator Setup()
     {
+        gameOverText.enabled = false;
         if (clearedLevel)
         {
             blackBackground.enabled = true;
@@ -210,5 +214,30 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(1);
             StartCoroutine(Setup());
         }
+    }
+
+    public IEnumerator PlayerEaten()
+    {
+        hadDeathOnThisLevel = true;
+        StopGame();
+        yield return new WaitForSeconds(1);
+
+        redGhostController.SetVisible(false);
+        pinkGhostController.SetVisible(false);
+        blueGhostController.SetVisible(false);
+        orangeGhostController.SetVisible(false);
+
+        pacman.GetComponent<PlayerController>().Death();
+        death.Play();
+        yield return new WaitForSeconds(3);
+
+        lives--;
+        if(lives <= 0)
+        {
+            newGame = true;
+            gameOverText.enabled = true;
+            yield return new WaitForSeconds(3);
+        }
+        StartCoroutine(Setup());
     }
 }
