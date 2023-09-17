@@ -53,9 +53,14 @@ public class EnemyController : MonoBehaviour
 
     public SpriteRenderer ghostSprite;
     public SpriteRenderer eyesSprite;
+
+    public Animator animator;
+
+    public Color color;
     // Start is called before the first frame update
     void Awake()
     {
+        animator = GetComponent<Animator>();
         ghostSprite = GetComponent<SpriteRenderer>();
 
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -88,6 +93,8 @@ public class EnemyController : MonoBehaviour
 
     public void Setup()
     {
+        animator.SetBool("moving", false);
+
         ghostNodeState = startGhostNodeState;
         readyToLeaveHome = false;
         movementController.currentNode = startingNode;
@@ -117,7 +124,7 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isVisible)
+        if (isVisible)
         {
             ghostSprite.enabled = true;
             eyesSprite.enabled = true;
@@ -128,10 +135,25 @@ public class EnemyController : MonoBehaviour
             eyesSprite.enabled = false;
         }
 
+        if (isFrightened)
+        {
+            animator.SetBool("frightened", true);
+            eyesSprite.enabled = false;
+            ghostSprite.color = new Color(255, 255, 255, 255);
+        }
+        else
+        {
+            animator.SetBool("frightened", false);
+            ghostSprite.color = color;
+        }
+
         if (!gameManager.gameIsRunning)
         {
             return;
         }
+
+
+        animator.SetBool("moving", true);
 
         if (testRespawn == true)
         {
@@ -516,11 +538,11 @@ public class EnemyController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player")
+        if (collision.tag == "Player")
         {
-            if(isFrightened)
+            if (isFrightened)
             {
-                
+
             }
             else
             {
