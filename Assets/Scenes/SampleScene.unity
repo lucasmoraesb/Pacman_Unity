@@ -16891,6 +16891,7 @@ GameObject:
   - component: {fileID: 533159475}
   - component: {fileID: 533159477}
   - component: {fileID: 533159476}
+  - component: {fileID: 533159478}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -16910,8 +16911,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39fa0e1124e96d146873bca4b935d1d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pacman: {fileID: 707260839}
   leftWarpNode: {fileID: 226616052}
+  pacman: {fileID: 707260839}
   rightWarpNode: {fileID: 1584994775}
   munch1: {fileID: 533159477}
   munch2: {fileID: 533159476}
@@ -16926,10 +16927,22 @@ MonoBehaviour:
   pinkGhost: {fileID: 2024223803}
   blueGhost: {fileID: 970063916}
   orangeGhost: {fileID: 2023178383}
+  pacmanController: {fileID: 707260842}
+  redGhostController: {fileID: 1276343593}
+  pinkGhostController: {fileID: 2024223807}
+  blueGhostController: {fileID: 970063920}
+  orangeGhostController: {fileID: 2023178387}
   totalPellets: 0
   pelletsLeft: 0
   pelletsCollectedOnThisLife: 0
   hadDeathOnThisLevel: 0
+  gameIsRunning: 0
+  nodeControllers: []
+  newGame: 0
+  clearedLevel: 0
+  startGameAudio: {fileID: 533159478}
+  lives: 0
+  currentLevel: 0
   currentGhostMode: 0
 --- !u!4 &533159473
 Transform:
@@ -17077,6 +17090,102 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 0.083
   m_Pitch: 0.95
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &533159478
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533159471}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: bc650fb3cbe146d4aa1c1715a595e4ba, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -21986,7 +22095,7 @@ Transform:
   m_GameObject: {fileID: 707260839}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.06, y: -0.63, z: 0}
+  m_LocalPosition: {x: -0.06, y: -0.65, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22005,7 +22114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb2bf3f3e7201bbc6b358599e8169e69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 533159472}
   currentNode: {fileID: 799842615}
   speed: 3
   direction: 
@@ -22024,8 +22133,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880343d51f377d5f496d69c6d231d649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  animator: {fileID: 0}
+  movementController: {fileID: 707260841}
+  sprite: {fileID: 1565635440}
+  animator: {fileID: 1565635441}
+  startNode: {fileID: 799842615}
+  startPos: {x: 0, y: 0}
+  gameManager: {fileID: 533159472}
 --- !u!50 &707260843
 Rigidbody2D:
   serializedVersion: 4
@@ -29288,7 +29401,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  currentNode: {fileID: 0}
+  currentNode: {fileID: 1779790446}
   speed: 3
   direction: 
   lastMovingDirection: 
@@ -29307,16 +29420,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghostNodeState: 0
+  startGhostNodeState: 0
   respawnState: 0
   ghostType: 2
   ghostNodeLeft: {fileID: 1779790446}
   ghostNodeRight: {fileID: 874034828}
   ghostNodeCenter: {fileID: 499644851}
   ghostNodeStart: {fileID: 1016114570}
-  movementController: {fileID: 0}
-  startingNode: {fileID: 0}
+  movementController: {fileID: 970063919}
+  startingNode: {fileID: 1779790446}
   readyToLeaveHome: 0
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 533159472}
   testRespawn: 0
   isFrightened: 0
   scatterNodes:
@@ -35803,8 +35917,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb2bf3f3e7201bbc6b358599e8169e69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
-  currentNode: {fileID: 0}
+  gameManager: {fileID: 533159472}
+  currentNode: {fileID: 1016114570}
   speed: 3
   direction: 
   lastMovingDirection: 
@@ -35823,16 +35937,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghostNodeState: 0
+  startGhostNodeState: 0
   respawnState: 0
   ghostType: 0
   ghostNodeLeft: {fileID: 1779790446}
   ghostNodeRight: {fileID: 874034828}
   ghostNodeCenter: {fileID: 499644851}
   ghostNodeStart: {fileID: 1016114570}
-  movementController: {fileID: 0}
-  startingNode: {fileID: 0}
+  movementController: {fileID: 1276343592}
+  startingNode: {fileID: 1016114570}
   readyToLeaveHome: 0
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 533159472}
   testRespawn: 0
   isFrightened: 0
   scatterNodes:
@@ -59396,7 +59511,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  currentNode: {fileID: 0}
+  currentNode: {fileID: 874034828}
   speed: 3
   direction: 
   lastMovingDirection: 
@@ -59415,16 +59530,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghostNodeState: 0
+  startGhostNodeState: 0
   respawnState: 0
   ghostType: 3
   ghostNodeLeft: {fileID: 1779790446}
   ghostNodeRight: {fileID: 874034828}
   ghostNodeCenter: {fileID: 499644851}
   ghostNodeStart: {fileID: 1016114570}
-  movementController: {fileID: 0}
-  startingNode: {fileID: 0}
+  movementController: {fileID: 2023178386}
+  startingNode: {fileID: 874034828}
   readyToLeaveHome: 0
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 533159472}
   testRespawn: 0
   isFrightened: 0
   scatterNodes:
@@ -59584,7 +59700,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
-  currentNode: {fileID: 0}
+  currentNode: {fileID: 499644851}
   speed: 3
   direction: 
   lastMovingDirection: 
@@ -59603,16 +59719,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghostNodeState: 0
+  startGhostNodeState: 0
   respawnState: 0
   ghostType: 1
   ghostNodeLeft: {fileID: 1779790446}
   ghostNodeRight: {fileID: 874034828}
   ghostNodeCenter: {fileID: 499644851}
   ghostNodeStart: {fileID: 1016114570}
-  movementController: {fileID: 0}
-  startingNode: {fileID: 0}
+  movementController: {fileID: 2024223806}
+  startingNode: {fileID: 499644851}
   readyToLeaveHome: 0
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 533159472}
   testRespawn: 0
   isFrightened: 0
   scatterNodes:

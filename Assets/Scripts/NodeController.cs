@@ -26,14 +26,13 @@ public class NodeController : MonoBehaviour
 
     public bool isSideNode = false;
 
-
     // Start is called before the first frame update
     void Awake()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         if (transform.childCount > 0)
         {
-            gameManager.GotPelletFromNodeController();
+            gameManager.GotPelletFromNodeController(this);
             hasPellet = true;
             isPelletNode = true;
             pelletSprite = GetComponentInChildren<SpriteRenderer>();
@@ -128,6 +127,15 @@ public class NodeController : MonoBehaviour
         else
         {
             return null;
+        }
+    }
+
+    public void RespawnPellet()
+    {
+        if (isPelletNode)
+        {
+            hasPellet = true;
+            pelletSprite.enabled = true;
         }
     }
 
