@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
 
     public GameManager gameManager;
 
+    public bool isDead = false;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour
 
     public void Stop()
     {
+        isDead = false;
         animator.speed = 0;
     }
 
@@ -47,8 +50,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!gameManager.gameIsRunning)
         {
+            if (!isDead)
+            {
+                animator.speed = 0;
+            }
             return;
         }
+
+        animator.speed = 1;
 
         animator.SetBool("moving", true);
         if (Input.GetKey(KeyCode.UpArrow))
@@ -96,7 +105,9 @@ public class PlayerController : MonoBehaviour
 
     public void Death()
     {
+        isDead = true;
         animator.SetBool("moving", false);
+        animator.speed = 1;
         animator.SetBool("dead", true);
     }
 }

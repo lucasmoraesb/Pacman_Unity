@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
     public Image blackBackground;
 
     public Text gameOverText;
-
+    public Text livesText;
     public bool isPowerPelletRunning = false;
     public float currentPowerPelletTime = 0;
     public float powerPelletTimer = 8f;
@@ -134,7 +134,7 @@ public class GameManager : MonoBehaviour
             startGameAudio.Play();
             score = 0;
             scoreText.text = "Score: " + score.ToString();
-            lives = 3;
+            SetLives(3);
             currentLevel = 1;
         }
 
@@ -149,6 +149,12 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(waitTimer);
 
         StartGame();
+    }
+
+    void SetLives(int newLives)
+    {
+        lives = newLives;
+        livesText.text = "Lives: " + lives;
     }
 
     void StartGame()
@@ -337,8 +343,7 @@ public class GameManager : MonoBehaviour
         pacman.GetComponent<PlayerController>().Death();
         death.Play();
         yield return new WaitForSeconds(3);
-
-        lives--;
+        SetLives(lives - 1);
         if (lives <= 0)
         {
             newGame = true;
