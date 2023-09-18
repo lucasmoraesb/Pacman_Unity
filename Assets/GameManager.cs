@@ -89,8 +89,8 @@ public class GameManager : MonoBehaviour
         clearedLevel = false;
         blackBackground.enabled = false;
 
-        maps[0].SetActive(false);
-        maps[1].SetActive(true);
+        maps[0].SetActive(true);
+        maps[1].SetActive(false);
         maps[2].SetActive(false);
 
         pacmanController = pacman.GetComponent<PlayerController>();
