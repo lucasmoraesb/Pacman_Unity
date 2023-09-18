@@ -124,9 +124,22 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (ghostNodeState != GhostNodeStatesEnum.movingInNodes || !gameManager.isPowerPelletRunning)
+        {
+            isFrightened = false;
+        }
+
         if (isVisible)
         {
-            ghostSprite.enabled = true;
+            if (ghostNodeState != GhostNodeStatesEnum.respawning)
+            {
+                ghostSprite.enabled = true;
+            }
+            else
+            {
+                ghostSprite.enabled = false;
+            }
+
             eyesSprite.enabled = true;
         }
         else
@@ -170,6 +183,11 @@ public class EnemyController : MonoBehaviour
         {
             movementController.SetSpeed(3);
         }
+    }
+
+    public void SetFrightened(bool newIsFrightened)
+    {
+        isFrightened = newIsFrightened;
     }
 
     public void ReachedCenterOfNode(NodeController nodeController)
@@ -538,11 +556,12 @@ public class EnemyController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.tag == "Player" && ghostNodeState != GhostNodeStatesEnum.respawning)
         {
             if (isFrightened)
             {
-
+                gameManager.GhostEaten();
+                ghostNodeState = GhostNodeStatesEnum.respawning;
             }
             else
             {
