@@ -78,12 +78,20 @@ public class GameManager : MonoBehaviour
     public bool runningTimer;
     public bool completedTimer;
 
+    public List<GameObject> maps = new List<GameObject>();
+
+    public int currentMap = 0;
+
     // Start is called before the first frame update
     void Awake()
     {
         newGame = true;
         clearedLevel = false;
         blackBackground.enabled = false;
+
+        maps[0].SetActive(true);
+        maps[1].SetActive(false);
+        maps[2].SetActive(false);
 
         pacmanController = pacman.GetComponent<PlayerController>();
         redGhostController = redGhost.GetComponent<EnemyController>();
@@ -123,10 +131,6 @@ public class GameManager : MonoBehaviour
         {
             pelletsLeft = totalPellets;
             waitTimer = 4f;
-            for (int i = 0; i < nodeControllers.Count; i++)
-            {
-                nodeControllers[i].RespawnPellet();
-            }
         }
 
         if (newGame)
@@ -144,10 +148,28 @@ public class GameManager : MonoBehaviour
         blueGhostController.Setup();
         orangeGhostController.Setup();
 
-        newGame = false;
         clearedLevel = false;
         yield return new WaitForSeconds(waitTimer);
 
+        if(currentMap == 1){
+            maps[0].SetActive(false);
+            maps[1].SetActive(true);
+            maps[2].SetActive(false);
+        }
+        else if(currentMap == 2){
+            maps[0].SetActive(false);
+            maps[1].SetActive(false);
+            maps[2].SetActive(true);
+        }
+        
+        if(newGame){
+            for (int i = 0; i < nodeControllers.Count; i++)
+            {
+                nodeControllers[i].RespawnPellet();
+            }
+        }
+        newGame = false;
+        
         StartGame();
     }
 
@@ -293,6 +315,8 @@ public class GameManager : MonoBehaviour
 
         if (pelletsLeft == 0)
         {
+            newGame = true;
+            currentMap++;
             currentLevel++;
             clearedLevel = true;
             StopGame();

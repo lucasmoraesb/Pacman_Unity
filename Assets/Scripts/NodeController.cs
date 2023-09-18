@@ -31,15 +31,17 @@ public class NodeController : MonoBehaviour
     public float powerPelletBlinkingTimer = 0;
 
     // Start is called before the first frame update
+
     void Awake()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         if (transform.childCount > 0)
         {
             gameManager.GotPelletFromNodeController(this);
-            hasPellet = true;
+            hasPellet = false;
             isPelletNode = true;
             pelletSprite = GetComponentInChildren<SpriteRenderer>();
+            pelletSprite.enabled = false;
         }
 
         RaycastHit2D[] hitsDown;
