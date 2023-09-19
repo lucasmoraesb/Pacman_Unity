@@ -38,6 +38,14 @@ public class GameManager : MonoBehaviour
 
     public int totalPellets;
     public int pelletsLeft;
+    public int totalPelletsMap0;
+    public int pelletsLeftMap0;
+
+    public int totalPelletsMap1;
+    public int pelletsLeftMap1;
+
+    public int totalPelletsMap2;
+    public int pelletsLeftMap2;
     public int pelletsCollectedOnThisLife;
 
     public bool hadDeathOnThisLevel = false;
@@ -128,8 +136,23 @@ public class GameManager : MonoBehaviour
         float waitTimer = 1f;
 
         if (clearedLevel || newGame)
-        {
-            pelletsLeft = totalPellets;
+        {   
+            if(currentMap == 0)
+            {
+                totalPellets = totalPelletsMap0;
+                pelletsLeft = pelletsLeftMap0;
+            }
+            else if(currentMap == 1)
+            {
+                totalPellets = totalPelletsMap1;
+                pelletsLeft = pelletsLeftMap1;
+            }
+            else if(currentMap == 2)
+            {
+                totalPellets = totalPelletsMap2;
+                pelletsLeft = pelletsLeftMap2;
+            }
+            // pelletsLeft = totalPellets;
             waitTimer = 4f;
         }
 
@@ -163,9 +186,11 @@ public class GameManager : MonoBehaviour
         }
         
         if(newGame){
-            for (int i = 0; i < nodeControllers.Count; i++)
-            {
-                nodeControllers[i].RespawnPellet();
+            foreach(NodeController node in nodeControllers){
+                if(node.map == currentMap)
+                {
+                    node.RespawnPellet();
+                }
             }
         }
         newGame = false;
@@ -260,8 +285,21 @@ public class GameManager : MonoBehaviour
     public void GotPelletFromNodeController(NodeController nodeController)
     {
         nodeControllers.Add(nodeController);
-        totalPellets++;
-        pelletsLeft++;
+        if(nodeController.map == 0)
+        {
+            totalPelletsMap0++;
+            pelletsLeftMap0++;
+        }
+        else if(nodeController.map == 1)
+        {
+            totalPelletsMap1++;
+            pelletsLeftMap1++;
+        }
+        else if(nodeController.map == 2)
+        {
+            totalPelletsMap2++;
+            pelletsLeftMap2++;
+        }
     }
 
     public void AddToScore(int amount)
@@ -271,7 +309,24 @@ public class GameManager : MonoBehaviour
     }
 
     public IEnumerator CollectedPellet(NodeController nodeController)
-    {
+    {   
+        
+        if(currentMap == 0)
+        {
+            pelletsLeftMap0--;
+            pelletsLeft = pelletsLeftMap0;
+        }
+        else if(currentMap == 1)
+        {
+            pelletsLeftMap1--;
+            pelletsLeft = pelletsLeftMap1;
+        }
+        else if(currentMap == 2)
+        {
+            pelletsLeftMap2--;
+            pelletsLeft = pelletsLeftMap2;
+        }
+
         if (currentMunch == 0)
         {
             munch1.Play();
@@ -283,7 +338,6 @@ public class GameManager : MonoBehaviour
             currentMunch = 0;
         }
 
-        pelletsLeft--;
         pelletsCollectedOnThisLife++;
 
         int requiredBluePellets = 0;
