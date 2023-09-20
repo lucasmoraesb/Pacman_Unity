@@ -104,7 +104,18 @@ public class NodeController : MonoBehaviour
         if (isGhostStartingNode)
         {
             canMoveDown = true;
-            nodeDown = gameManager.ghostNodeCenter;
+            if(this.CompareTag("Node"))
+            {
+                nodeDown = GameObject.Find("Center");
+            }
+            else if(this.CompareTag("Node2"))
+            {
+                nodeDown = GameObject.Find("Center1");
+            }
+            else if(this.CompareTag("Node3"))
+            {
+                nodeDown = GameObject.Find("Center2");
+            }
         }
     }
 

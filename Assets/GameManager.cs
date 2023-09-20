@@ -97,9 +97,7 @@ public class GameManager : MonoBehaviour
         clearedLevel = false;
         blackBackground.enabled = false;
 
-        maps[0].SetActive(true);
-        maps[1].SetActive(false);
-        maps[2].SetActive(false);
+        
 
         pacmanController = pacman.GetComponent<PlayerController>();
         redGhostController = redGhost.GetComponent<EnemyController>();
@@ -142,21 +140,21 @@ public class GameManager : MonoBehaviour
                 leftWarpNode = GameObject.Find("LeftWarp");
                 rightWarpNode = GameObject.Find("RightWarp");
                 totalPellets = totalPelletsMap0;
-                pelletsLeft = pelletsLeftMap0;
+                pelletsLeftMap0 = totalPelletsMap0;
             }
             else if(currentMap == 1)
             {
                 leftWarpNode = GameObject.Find("LeftWarp1");
                 rightWarpNode = GameObject.Find("RightWarp1");
                 totalPellets = totalPelletsMap1;
-                pelletsLeft = pelletsLeftMap1;
+                pelletsLeftMap1 = totalPelletsMap1;
             }
             else if(currentMap == 2)
             {   
                 leftWarpNode = GameObject.Find("LeftWarp2");
                 rightWarpNode = GameObject.Find("RightWarp2");
                 totalPellets = totalPelletsMap2;
-                pelletsLeft = pelletsLeftMap2;
+                pelletsLeftMap2 = totalPelletsMap2;
             }
             // pelletsLeft = totalPellets;
             waitTimer = 4f;
@@ -169,6 +167,7 @@ public class GameManager : MonoBehaviour
             scoreText.text = "Score: " + score.ToString();
             SetLives(3);
             currentLevel = 1;
+            pelletsCollectedOnThisLife = 0;
         }
 
         pacmanController.Setup();
@@ -180,6 +179,11 @@ public class GameManager : MonoBehaviour
         clearedLevel = false;
         yield return new WaitForSeconds(waitTimer);
 
+        if(currentMap == 0){
+            maps[0].SetActive(true);
+            maps[1].SetActive(false);
+            maps[2].SetActive(false);
+        }
         if(currentMap == 1){
             maps[0].SetActive(false);
             maps[1].SetActive(true);
@@ -377,6 +381,9 @@ public class GameManager : MonoBehaviour
         {
             newGame = true;
             currentMap++;
+            if(currentMap > 2){
+                currentMap = 0;
+            }
             currentLevel++;
             clearedLevel = true;
             StopGame();
@@ -429,7 +436,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(3);
         SetLives(lives - 1);
         if (lives <= 0)
-        {
+        {         
             newGame = true;
             gameOverText.enabled = true;
             yield return new WaitForSeconds(3);

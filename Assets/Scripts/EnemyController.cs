@@ -114,6 +114,10 @@ public class EnemyController : MonoBehaviour
             {
                 startingNode = GameObject.Find("Right");
             }
+            ghostNodeStart = GameObject.Find("Start");
+            ghostNodeCenter = GameObject.Find("Center");
+            ghostNodeLeft = GameObject.Find("Left");
+            ghostNodeRight = GameObject.Find("Right");
         }
         else if(gameManager.currentMap == 1){
             if (ghostType == GhostType.red)
@@ -132,6 +136,10 @@ public class EnemyController : MonoBehaviour
             {
                 startingNode = GameObject.Find("Right1");
             }
+            ghostNodeStart = GameObject.Find("Start1");
+            ghostNodeCenter = GameObject.Find("Center1");
+            ghostNodeLeft = GameObject.Find("Left1");
+            ghostNodeRight = GameObject.Find("Right1");
         }
         else{
             if (ghostType == GhostType.red)
@@ -150,6 +158,10 @@ public class EnemyController : MonoBehaviour
             {
                 startingNode = GameObject.Find("Right2");
             }
+            ghostNodeStart = GameObject.Find("Start2");
+            ghostNodeCenter = GameObject.Find("Center2");
+            ghostNodeLeft = GameObject.Find("Left2");
+            ghostNodeRight = GameObject.Find("Right2");
         }
         animator.SetBool("moving", false);
 
@@ -313,7 +325,6 @@ public class EnemyController : MonoBehaviour
                 }
                 else if (respawnState == GhostNodeStatesEnum.rightNode)
                 {
-
                     movementController.SetDirection("right");
                 }
             }
