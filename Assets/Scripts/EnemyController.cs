@@ -41,7 +41,7 @@ public class EnemyController : MonoBehaviour
     public GameManager gameManager;
 
     public bool testRespawn = false;
-
+    public List<string> respawnPath = new();
     public bool isFrightened = false;
 
     public GameObject[] scatterNodes;
@@ -70,24 +70,28 @@ public class EnemyController : MonoBehaviour
             startGhostNodeState = GhostNodeStatesEnum.startNode;
             respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeStart;
+            ghostNodeState = startGhostNodeState;
         }
         else if (ghostType == GhostType.pink)
         {
             startGhostNodeState = GhostNodeStatesEnum.centerNode;
             respawnState = GhostNodeStatesEnum.centerNode;
             startingNode = ghostNodeCenter;
+            ghostNodeState = startGhostNodeState;
         }
         else if (ghostType == GhostType.blue)
         {
             startGhostNodeState = GhostNodeStatesEnum.leftNode;
             respawnState = GhostNodeStatesEnum.leftNode;
             startingNode = ghostNodeLeft;
+            ghostNodeState = startGhostNodeState;
         }
         else if (ghostType == GhostType.orange)
         {
             startGhostNodeState = GhostNodeStatesEnum.rightNode;
             respawnState = GhostNodeStatesEnum.rightNode;
             startingNode = ghostNodeRight;
+            ghostNodeState = startGhostNodeState;
         }
     }
 
@@ -175,7 +179,6 @@ public class EnemyController : MonoBehaviour
         SetVisible(true);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (ghostNodeState != GhostNodeStatesEnum.movingInNodes || !gameManager.isPowerPelletRunning)
@@ -266,7 +269,7 @@ public class EnemyController : MonoBehaviour
             }
             else if (isFrightened)
             {
-                string direction = GetRandomDirection();
+                string direction = GetDistantDirection(gameManager.pacman.transform.position);
                 movementController.SetDirection(direction);
             }
             else
@@ -293,11 +296,10 @@ public class EnemyController : MonoBehaviour
         }
         else if (ghostNodeState == GhostNodeStatesEnum.respawning)
         {
-            string direction = "";
-
             if (transform.position.x == ghostNodeStart.transform.position.x && transform.position.y == ghostNodeStart.transform.position.y)
             {
-                direction = "down";
+                movementController.SetDirection("down");
+                respawnPath.Clear();
             }
             else if (transform.position.x == ghostNodeCenter.transform.position.x && transform.position.y == ghostNodeCenter.transform.position.y)
             {
@@ -307,11 +309,12 @@ public class EnemyController : MonoBehaviour
                 }
                 else if (respawnState == GhostNodeStatesEnum.leftNode)
                 {
-                    direction = "left";
+                    movementController.SetDirection("left");
                 }
                 else if (respawnState == GhostNodeStatesEnum.rightNode)
                 {
-                    direction = "right";
+
+                    movementController.SetDirection("right");
                 }
             }
             else if (
@@ -323,9 +326,11 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
-                direction = GetClosestDirection(ghostNodeStart.transform.position);
+                if(respawnPath.Count == 0)
+                    AStarPath(ghostNodeStart.transform.position);
+                movementController.SetDirection(respawnPath[0]);
+                respawnPath.RemoveAt(0);
             }
-            movementController.SetDirection(direction);
         }
         else
         {
@@ -357,32 +362,67 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    string GetRandomDirection()
+    string GetDistantDirection(Vector2 target)
     {
-        List<string> possibleDirections = new List<string>();
+        float distantDistance = 0;
+        string lastMovingDirection = movementController.lastMovingDirection;
+        string newDirection = "";
+
         NodeController nodeController = movementController.currentNode.GetComponent<NodeController>();
 
-        if (nodeController.canMoveDown && movementController.lastMovingDirection != "up")
+        if (nodeController.canMoveUp && lastMovingDirection != "down")
         {
-            possibleDirections.Add("down");
-        }
-        else if (nodeController.canMoveUp && movementController.lastMovingDirection != "down")
-        {
-            possibleDirections.Add("up");
-        }
-        else if (nodeController.canMoveLeft && movementController.lastMovingDirection != "right")
-        {
-            possibleDirections.Add("left");
-        }
-        else if (nodeController.canMoveRight && movementController.lastMovingDirection != "left")
-        {
-            possibleDirections.Add("right");
+            GameObject nodeUp = nodeController.nodeUp;
+
+            float distance = Vector2.Distance(nodeUp.transform.position, target);
+
+            if (distance > distantDistance || distantDistance == 0)
+            {
+                distantDistance = distance;
+                newDirection = "up";
+            }
         }
 
-        string direction = "";
-        int randomDirectionIndex = Random.Range(0, possibleDirections.Count - 1);
-        direction = possibleDirections[randomDirectionIndex];
-        return direction;
+        if (nodeController.canMoveDown && lastMovingDirection != "up")
+        {
+            GameObject nodeDown = nodeController.nodeDown;
+
+            float distance = Vector2.Distance(nodeDown.transform.position, target);
+
+            if (distance > distantDistance || distantDistance == 0)
+            {
+                distantDistance = distance;
+                newDirection = "down";
+            }
+        }
+
+        if (nodeController.canMoveLeft && lastMovingDirection != "right")
+        {
+            GameObject nodeLeft = nodeController.nodeLeft;
+
+            float distance = Vector2.Distance(nodeLeft.transform.position, target);
+
+            if (distance > distantDistance || distantDistance == 0)
+            {
+                distantDistance = distance;
+                newDirection = "left";
+            }
+        }
+
+        if (nodeController.canMoveRight && lastMovingDirection != "left")
+        {
+            GameObject nodeRight = nodeController.nodeRight;
+
+            float distance = Vector2.Distance(nodeRight.transform.position, target);
+
+            if (distance > distantDistance || distantDistance == 0)
+            {
+                distantDistance = distance;
+                newDirection = "right";
+            }
+        }
+
+        return newDirection;
     }
 
     void DetermineGhostScatterModeDirection()
@@ -634,6 +674,132 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
+
+    public class Node
+    {
+        public GameObject node;
+        public float hFunction;
+        public float gFunction;
+        public string direction;
+        public Node father;
+        public List<Node> neighbors;
+    }
+
+    public Node CreateNode(GameObject node, Node father, string direction)
+    {
+        Node newNode = new()
+        {
+            node = node,
+            direction = direction,
+            father = father,
+            neighbors = new List<Node>()
+        };
+        return newNode;
+    }
+
+    public float CalculateHFunction(Node node, Vector2 target)
+    {
+        float hFunction = Vector2.Distance(node.node.transform.position, target);
+        return hFunction;
+    }
+
+    public float CalculateGFunction(Node currentNode, Node node)
+    {
+        float gFunction = Vector2.Distance(currentNode.node.transform.position, node.node.transform.position);
+        return gFunction + currentNode.gFunction;
+    }
+
+    public List<Node> FindLeafs(Node node)
+    {
+        List<Node> leafs = new();
+        if (node.neighbors.Count == 0)
+        {
+            leafs.Add(node);
+        }
+        else
+        {
+            foreach (Node neighbor in node.neighbors)
+            {
+                leafs.AddRange(FindLeafs(neighbor));
+            }
+        }
+        return leafs;
+    }
+
+    public Node ShortestLeaf(List<Node> leafs)
+    {
+        Node shortestLeaf = leafs[0];
+        foreach (Node leaf in leafs)
+        {
+            if ((leaf.hFunction + leaf.gFunction) < (shortestLeaf.hFunction + shortestLeaf.gFunction))
+            {
+                shortestLeaf = leaf;
+            }
+        }
+        return shortestLeaf;
+    }
+
+    public void AStarPath(Vector2 target)
+    {
+        List <string> path = new();
+
+        Node startNode = CreateNode(movementController.currentNode, null, movementController.lastMovingDirection);
+        startNode.hFunction = CalculateHFunction(startNode, target);
+        startNode.gFunction = 0;
+
+        Node currentNode = startNode;
+
+        while(currentNode.hFunction != 0)
+        {
+            if(currentNode.node.GetComponent<NodeController>().canMoveUp && currentNode.direction != "down")
+            {
+                GameObject nodeUp = currentNode.node.GetComponent<NodeController>().nodeUp;
+                Node newNode = CreateNode(nodeUp, currentNode, "up");
+                newNode.hFunction = CalculateHFunction(newNode, target);
+                newNode.gFunction = CalculateGFunction(currentNode, newNode);
+                currentNode.neighbors.Add(newNode);
+            }
+            if (currentNode.node.GetComponent<NodeController>().canMoveDown && currentNode.direction != "up")
+            {
+                GameObject nodeDown = currentNode.node.GetComponent<NodeController>().nodeDown;
+                Node newNode = CreateNode(nodeDown, currentNode, "down");
+                newNode.hFunction = CalculateHFunction(newNode, target);
+                newNode.gFunction = CalculateGFunction(currentNode, newNode);
+                currentNode.neighbors.Add(newNode);
+            }
+            if (currentNode.node.GetComponent<NodeController>().canMoveLeft && currentNode.direction != "right")
+            {
+                GameObject nodeLeft = currentNode.node.GetComponent<NodeController>().nodeLeft;
+                Node newNode = CreateNode(nodeLeft, currentNode, "left");
+                newNode.hFunction = CalculateHFunction(newNode, target);
+                newNode.gFunction = CalculateGFunction(currentNode, newNode);
+                currentNode.neighbors.Add(newNode);
+            }
+            if (currentNode.node.GetComponent<NodeController>().canMoveRight && currentNode.direction != "left")
+            {
+                GameObject nodeRight = currentNode.node.GetComponent<NodeController>().nodeRight;
+                Node newNode = CreateNode(nodeRight, currentNode, "right");
+                newNode.hFunction = CalculateHFunction(newNode, target);
+                newNode.gFunction = CalculateGFunction(currentNode, newNode);
+                currentNode.neighbors.Add(newNode);
+            }
+
+            List<Node> leafs = FindLeafs(startNode);
+            currentNode = ShortestLeaf(leafs);
+        }
+
+        while(currentNode.father != null)
+        {
+            path.Add(currentNode.direction);
+            currentNode = currentNode.father;
+        }
+
+        path.Reverse();
+
+        Debug.Log("Path encontrado");
+        
+        respawnPath = path;
+    }    
 }
 
 
