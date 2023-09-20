@@ -61,7 +61,7 @@ public class MovementController : MonoBehaviour
                 canWarp = false;
             }
             else if (currentNodeController.isWarpRightNode && canWarp)
-            {
+            {   
                 currentNode = gameManager.leftWarpNode;
                 direction = "right";
                 lastMovingDirection = "right ";

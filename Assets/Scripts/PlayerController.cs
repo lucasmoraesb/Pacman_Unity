@@ -29,6 +29,16 @@ public class PlayerController : MonoBehaviour
 
     public void Setup()
     {
+        if(gameManager.currentMap == 0){
+            startNode = GameObject.Find("NodeStartMap0");
+        }
+        else if(gameManager.currentMap == 1){
+            startNode = GameObject.Find("NodeStartMap1");
+        }
+        else{
+            startNode = GameObject.Find("NodeStartMap2");
+        }
+
         animator.SetBool("dead", false);
         animator.SetBool("moving", false);
         movementController.currentNode = startNode;

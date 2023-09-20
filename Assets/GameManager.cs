@@ -139,16 +139,22 @@ public class GameManager : MonoBehaviour
         {   
             if(currentMap == 0)
             {
+                leftWarpNode = GameObject.Find("LeftWarp");
+                rightWarpNode = GameObject.Find("RightWarp");
                 totalPellets = totalPelletsMap0;
                 pelletsLeft = pelletsLeftMap0;
             }
             else if(currentMap == 1)
             {
+                leftWarpNode = GameObject.Find("LeftWarp1");
+                rightWarpNode = GameObject.Find("RightWarp1");
                 totalPellets = totalPelletsMap1;
                 pelletsLeft = pelletsLeftMap1;
             }
             else if(currentMap == 2)
-            {
+            {   
+                leftWarpNode = GameObject.Find("LeftWarp2");
+                rightWarpNode = GameObject.Find("RightWarp2");
                 totalPellets = totalPelletsMap2;
                 pelletsLeft = pelletsLeftMap2;
             }

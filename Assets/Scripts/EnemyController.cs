@@ -93,6 +93,60 @@ public class EnemyController : MonoBehaviour
 
     public void Setup()
     {
+        if(gameManager.currentMap == 0){
+            if (ghostType == GhostType.red)
+            {
+                startingNode = GameObject.Find("Start");
+            }
+            else if (ghostType == GhostType.pink)
+            {
+                startingNode = GameObject.Find("Center");
+            }
+            else if (ghostType == GhostType.blue)
+            {
+                startingNode = GameObject.Find("Left");
+            }
+            else if (ghostType == GhostType.orange)
+            {
+                startingNode = GameObject.Find("Right");
+            }
+        }
+        else if(gameManager.currentMap == 1){
+            if (ghostType == GhostType.red)
+            {
+                startingNode = GameObject.Find("Start1");
+            }
+            else if (ghostType == GhostType.pink)
+            {
+                startingNode = GameObject.Find("Center1");
+            }
+            else if (ghostType == GhostType.blue)
+            {
+                startingNode = GameObject.Find("Left1");
+            }
+            else if (ghostType == GhostType.orange)
+            {
+                startingNode = GameObject.Find("Right1");
+            }
+        }
+        else{
+            if (ghostType == GhostType.red)
+            {
+                startingNode = GameObject.Find("Start2");
+            }
+            else if (ghostType == GhostType.pink)
+            {
+                startingNode = GameObject.Find("Center2");
+            }
+            else if (ghostType == GhostType.blue)
+            {
+                startingNode = GameObject.Find("Left2");
+            }
+            else if (ghostType == GhostType.orange)
+            {
+                startingNode = GameObject.Find("Right2");
+            }
+        }
         animator.SetBool("moving", false);
 
         ghostNodeState = startGhostNodeState;
