@@ -97,7 +97,8 @@ public class EnemyController : MonoBehaviour
 
     public void Setup()
     {
-        if(gameManager.currentMap == 0){
+        if (gameManager.currentMap == 0)
+        {
             if (ghostType == GhostType.red)
             {
                 startingNode = GameObject.Find("Start");
@@ -119,7 +120,8 @@ public class EnemyController : MonoBehaviour
             ghostNodeLeft = GameObject.Find("Left");
             ghostNodeRight = GameObject.Find("Right");
         }
-        else if(gameManager.currentMap == 1){
+        else if (gameManager.currentMap == 1)
+        {
             if (ghostType == GhostType.red)
             {
                 startingNode = GameObject.Find("Start1");
@@ -141,7 +143,8 @@ public class EnemyController : MonoBehaviour
             ghostNodeLeft = GameObject.Find("Left1");
             ghostNodeRight = GameObject.Find("Right1");
         }
-        else{
+        else
+        {
             if (ghostType == GhostType.red)
             {
                 startingNode = GameObject.Find("Start2");
@@ -337,7 +340,7 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
-                if(respawnPath.Count == 0)
+                if (respawnPath.Count == 0)
                     AStarPath(ghostNodeStart.transform.position);
                 movementController.SetDirection(respawnPath[0]);
                 respawnPath.RemoveAt(0);
@@ -531,11 +534,12 @@ public class EnemyController : MonoBehaviour
 
         if (distance <= distanceBetweenNodes * 8)
         {
-            DetermineRedGhostDirection();
+            DetermineGhostScatterModeDirection();
         }
         else
         {
-            DetermineGhostScatterModeDirection();
+            DetermineRedGhostDirection();
+
         }
     }
 
@@ -752,7 +756,7 @@ public class EnemyController : MonoBehaviour
 
     public void AStarPath(Vector2 target)
     {
-        List <string> path = new();
+        List<string> path = new();
 
         Node startNode = CreateNode(movementController.currentNode, null, movementController.lastMovingDirection);
         startNode.hFunction = CalculateHFunction(startNode, target);
@@ -760,9 +764,9 @@ public class EnemyController : MonoBehaviour
 
         Node currentNode = startNode;
 
-        while(currentNode.hFunction != 0)
+        while (currentNode.hFunction != 0)
         {
-            if(currentNode.node.GetComponent<NodeController>().canMoveUp && currentNode.direction != "down")
+            if (currentNode.node.GetComponent<NodeController>().canMoveUp && currentNode.direction != "down")
             {
                 GameObject nodeUp = currentNode.node.GetComponent<NodeController>().nodeUp;
                 Node newNode = CreateNode(nodeUp, currentNode, "up");
@@ -799,7 +803,7 @@ public class EnemyController : MonoBehaviour
             currentNode = ShortestLeaf(leafs);
         }
 
-        while(currentNode.father != null)
+        while (currentNode.father != null)
         {
             path.Add(currentNode.direction);
             currentNode = currentNode.father;
@@ -808,9 +812,9 @@ public class EnemyController : MonoBehaviour
         path.Reverse();
 
         Debug.Log("Path encontrado");
-        
+
         respawnPath = path;
-    }    
+    }
 }
 
 
