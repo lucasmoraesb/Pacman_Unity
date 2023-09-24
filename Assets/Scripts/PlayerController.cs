@@ -7,20 +7,13 @@ public class PlayerController : MonoBehaviour
     public MovementController movementController;
     public SpriteRenderer sprite;
     public Animator animator;
-
     public GameObject startNode;
-
-    // public Vector2 startPos;
-
     public GameManager gameManager;
-
     public bool isDead = false;
 
-    // Start is called before the first frame update
     void Awake()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        // startPos = new Vector2(-0.06f, -0.65f);
         animator = GetComponentInChildren<Animator>();
         sprite = GetComponentInChildren<SpriteRenderer>();
         movementController = GetComponent<MovementController>();
@@ -55,7 +48,6 @@ public class PlayerController : MonoBehaviour
         animator.speed = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!gameManager.gameIsRunning)

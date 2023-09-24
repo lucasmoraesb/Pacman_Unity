@@ -289,7 +289,6 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
-                // Determine next game node to go to
                 if (GhostType.red == ghostType)
                 {
                     DetermineRedGhostDirection();
@@ -348,10 +347,8 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            // If we are ready to leave our home
             if (readyToLeaveHome)
             {
-                //If we are in the left or right home node, move to the center
                 if (ghostNodeState == GhostNodeStatesEnum.leftNode)
                 {
                     ghostNodeState = GhostNodeStatesEnum.centerNode;
@@ -539,7 +536,6 @@ public class EnemyController : MonoBehaviour
         else
         {
             DetermineRedGhostDirection();
-
         }
     }
 
@@ -597,69 +593,6 @@ public class EnemyController : MonoBehaviour
             float distance = Vector2.Distance(nodeRight.transform.position, target);
 
             if (distance < shortestDistance || shortestDistance == 0)
-            {
-                shortestDistance = distance;
-                newDirection = "right";
-            }
-        }
-
-        return newDirection;
-    }
-
-    string GetFurthestDirection(Vector2 target)
-    {
-        float shortestDistance = 0;
-        string lastMovingDirection = movementController.lastMovingDirection;
-        string newDirection = "";
-
-        NodeController nodeController = movementController.currentNode.GetComponent<NodeController>();
-
-        if (nodeController.canMoveUp && lastMovingDirection != "down")
-        {
-            GameObject nodeUp = nodeController.nodeUp;
-
-            float distance = Vector2.Distance(nodeUp.transform.position, target);
-
-            if (distance > shortestDistance || shortestDistance == 0)
-            {
-                shortestDistance = distance;
-                newDirection = "up";
-            }
-        }
-
-        if (nodeController.canMoveDown && lastMovingDirection != "up")
-        {
-            GameObject nodeDown = nodeController.nodeDown;
-
-            float distance = Vector2.Distance(nodeDown.transform.position, target);
-
-            if (distance > shortestDistance || shortestDistance == 0)
-            {
-                shortestDistance = distance;
-                newDirection = "down";
-            }
-        }
-
-        if (nodeController.canMoveLeft && lastMovingDirection != "right")
-        {
-            GameObject nodeLeft = nodeController.nodeLeft;
-
-            float distance = Vector2.Distance(nodeLeft.transform.position, target);
-
-            if (distance > shortestDistance || shortestDistance == 0)
-            {
-                shortestDistance = distance;
-                newDirection = "left";
-            }
-        }
-
-        if (nodeController.canMoveRight && lastMovingDirection != "left")
-        {
-            GameObject nodeRight = nodeController.nodeRight;
-
-            float distance = Vector2.Distance(nodeRight.transform.position, target);
-
-            if (distance > shortestDistance || shortestDistance == 0)
             {
                 shortestDistance = distance;
                 newDirection = "right";
@@ -810,8 +743,6 @@ public class EnemyController : MonoBehaviour
         }
 
         path.Reverse();
-
-        Debug.Log("Path encontrado");
 
         respawnPath = path;
     }
