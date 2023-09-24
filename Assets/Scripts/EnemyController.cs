@@ -57,7 +57,7 @@ public class EnemyController : MonoBehaviour
     public Animator animator;
 
     public Color color;
-    // Start is called before the first frame update
+
     void Awake()
     {
         animator = GetComponent<Animator>();
