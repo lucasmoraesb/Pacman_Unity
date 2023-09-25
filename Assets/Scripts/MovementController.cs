@@ -5,23 +5,18 @@ using UnityEngine;
 public class MovementController : MonoBehaviour
 {
     public GameManager gameManager;
-
     public GameObject currentNode;
     public float speed = 4f;
-
     public string direction = "";
     public string lastMovingDirection = "";
-
     public bool canWarp = true;
-
     public bool isGhost = false;
-    // Start is called before the first frame update
+
     void Awake()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!gameManager.gameIsRunning)

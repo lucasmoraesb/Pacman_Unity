@@ -5,18 +5,18 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject pacman;
 
     public GameObject leftWarpNode;
-    public GameObject pacman;
     public GameObject rightWarpNode;
 
+    public int currentMunch = 0;
     public AudioSource munch1;
     public AudioSource munch2;
+
     public AudioSource powerPelletAudio;
     public AudioSource respawningAudio;
     public AudioSource ghostEatenAudio;
-
-    public int currentMunch = 0;
 
     public int score;
     public Text scoreText;
@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     public GameObject ghostNodeRight;
     public GameObject ghostNodeCenter;
     public GameObject ghostNodeStart;
+
     public GameObject redGhost;
     public GameObject pinkGhost;
     public GameObject blueGhost;
@@ -40,64 +41,52 @@ public class GameManager : MonoBehaviour
     public int pelletsLeft;
     public int totalPelletsMap0;
     public int pelletsLeftMap0;
-
     public int totalPelletsMap1;
     public int pelletsLeftMap1;
-
     public int totalPelletsMap2;
     public int pelletsLeftMap2;
     public int pelletsCollectedOnThisLife;
 
     public bool hadDeathOnThisLevel = false;
-
     public bool gameIsRunning;
 
-    public List<NodeController> nodeControllers = new List<NodeController>();
+    public List<NodeController> nodeControllers = new();
 
     public bool newGame;
     public bool clearedLevel;
-
-    public AudioSource startGameAudio;
-    public AudioSource death;
-
     public int lives;
     public int currentLevel;
 
+    public AudioSource startGameAudio;
+    public AudioSource death;
+    
     public Image blackBackground;
-
     public Text gameOverText;
     public Text livesText;
+
     public bool isPowerPelletRunning = false;
     public float currentPowerPelletTime = 0;
     public float powerPelletTimer = 8f;
     public int powerPelletMultiplyer = 1;
-
     public enum GhostMode
     {
         chase, scatter
     }
-
     public GhostMode currentGhostMode;
-
     public int[] ghostModeTimers = new int[] { 7, 20, 7, 20, 5, 20, 5 };
-
     public int ghostModeTimerIndex;
     public float ghostModeTimer = 0;
     public bool runningTimer;
     public bool completedTimer;
 
-    public List<GameObject> maps = new List<GameObject>();
-
+    public List<GameObject> maps = new();
     public int currentMap = 0;
 
-    // Start is called before the first frame update
     void Awake()
     {
         newGame = true;
         clearedLevel = false;
         blackBackground.enabled = false;
-
-        
 
         pacmanController = pacman.GetComponent<PlayerController>();
         redGhostController = redGhost.GetComponent<EnemyController>();
@@ -156,7 +145,6 @@ public class GameManager : MonoBehaviour
                 totalPellets = totalPelletsMap2;
                 pelletsLeftMap2 = totalPelletsMap2;
             }
-            // pelletsLeft = totalPellets;
             waitTimer = 4f;
         }
 
@@ -217,18 +205,15 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         gameIsRunning = true;
-        // siren.Play();
     }
 
     void StopGame()
     {
         gameIsRunning = false;
-        // siren.Stop();
         powerPelletAudio.Stop();
         pacman.GetComponent<PlayerController>().Stop();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!gameIsRunning)
@@ -350,8 +335,8 @@ public class GameManager : MonoBehaviour
 
         pelletsCollectedOnThisLife++;
 
-        int requiredBluePellets = 0;
-        int requiredOrangePellets = 0;
+        int requiredBluePellets;
+        int requiredOrangePellets;
 
         if (hadDeathOnThisLevel)
         {
@@ -374,7 +359,6 @@ public class GameManager : MonoBehaviour
             orangeGhost.GetComponent<EnemyController>().readyToLeaveHome = true;
         }
 
-
         AddToScore(10);
 
         if (pelletsLeft == 0)
@@ -391,10 +375,8 @@ public class GameManager : MonoBehaviour
             StartCoroutine(Setup());
         }
 
-
         if (nodeController.isPowerPellet)
         {
-            //siren.Stop();
             powerPelletAudio.Play();
             isPowerPelletRunning = true;
             currentPowerPelletTime = 0;
@@ -412,6 +394,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(timeToPause);
         gameIsRunning = true;
     }
+
     public void GhostEaten()
     {
         ghostEatenAudio.Play();
